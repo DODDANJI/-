@@ -242,7 +242,7 @@ addEventListener('keydown', e => {
 }, true);
 
 // ---------------------------------------------------------------
-// 6. 마우스 커서: 빛이 번지는 동그라미가 마우스를 살짝 늦게 따라와요
+// 6. 마우스 커서: 유리 렌즈가 마우스를 살짝 늦게 따라와요
 //    사진이나 버튼 위에서는 커지고, 누르는 동안은 작아져요
 // ---------------------------------------------------------------
 (() => {
@@ -267,4 +267,62 @@ addEventListener('keydown', e => {
   document.addEventListener('mouseleave', () => cur.classList.remove('on'));
   addEventListener('pointerdown', () => cur.classList.add('down'));
   addEventListener('pointerup', () => cur.classList.remove('down'));
+})();
+
+// ---------------------------------------------------------------
+// 7. 인트로 ↔ 갤러리(챕터1): 스크롤을 한 번 하면 다음 화면으로 딱 넘어가요
+//    인트로 중간에 걸쳐 멈추지 않아요. INTRO_SNAP.duration으로 넘어가는 시간을 바꿔요
+// ---------------------------------------------------------------
+const INTRO_SNAP = { duration: 1.1, ease: 'expo.inOut' };
+(() => {
+  const ch1 = document.getElementById('chapter1');
+  if (!ch1) return;
+  const root = document.documentElement;
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const top = () => ch1.offsetTop;
+  const blocked = () => root.classList.contains('grid-open') || root.classList.contains('lb-open');
+  let moving = false, lockUntil = 0;
+  const go = to => {
+    moving = true;
+    const done = () => { root.style.scrollBehavior = ''; moving = false; lockUntil = performance.now() + 450; };
+    root.style.scrollBehavior = 'auto';
+    if (still || !window.gsap) { scrollTo(0, to); return done(); }
+    const o = { y: scrollY };
+    gsap.to(o, { y: to, duration: INTRO_SNAP.duration, ease: INTRO_SNAP.ease, onUpdate: () => scrollTo(0, o.y), onComplete: done });
+  };
+  // 방향: 1 = 아래로, -1 = 위로. 넘어가야 하면 true
+  const decide = dir => {
+    const y = scrollY, c = top();
+    if (dir > 0 && y < c - 2) { go(c); return true; }
+    if (dir < 0 && y > 0 && y <= c + 2) { go(0); return true; }
+    return false;
+  };
+  addEventListener('wheel', e => {
+    if (blocked() || e.ctrlKey) return;
+    const now = performance.now();
+    if (moving) return e.preventDefault();
+    if (now < lockUntil) { lockUntil = now + 150; return e.preventDefault(); }   // 트랙패드 관성 흡수
+    const dir = Math.sign(e.deltaY);
+    if (!dir) return;
+    // 챕터1 안에서 위로 올리다가 경계를 넘으려 하면 먼저 경계에 멈춰요
+    if (dir < 0 && scrollY > top() + 2 && scrollY + e.deltaY < top()) { e.preventDefault(); root.style.scrollBehavior = 'auto'; scrollTo(0, top()); root.style.scrollBehavior = ''; lockUntil = now + 300; return; }
+    if (decide(dir)) e.preventDefault();
+  }, { passive: false });
+  addEventListener('keydown', e => {
+    if (blocked() || moving || e.target.closest('input, textarea')) return;
+    const dir = ['ArrowDown', 'PageDown', ' '].includes(e.key) ? (e.shiftKey && e.key === ' ' ? -1 : 1) : ['ArrowUp', 'PageUp'].includes(e.key) ? -1 : 0;
+    if (dir && decide(dir)) e.preventDefault();
+  });
+  let ty = null;
+  addEventListener('touchstart', e => { ty = e.touches[0].clientY; }, { passive: true });
+  addEventListener('touchmove', e => {
+    if (ty === null || blocked()) return;
+    const d = ty - e.touches[0].clientY, y = scrollY, c = top();
+    if (moving || (y < c - 2) || (d < 0 && y <= c + 2 && y > 0)) e.preventDefault();
+  }, { passive: false });
+  addEventListener('touchend', e => {
+    if (ty === null || blocked() || moving) { ty = null; return; }
+    const d = ty - e.changedTouches[0].clientY; ty = null;
+    if (Math.abs(d) > 30) decide(Math.sign(d));
+  }, { passive: true });
 })();
