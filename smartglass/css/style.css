@@ -29,9 +29,15 @@ img,video{display:block}
 img.box,video.box{object-fit:cover}
 .ph{background:var(--gray)}
 
-/* 헤더 */
-.bar{position:absolute;inset:0 0 auto 0;height:calc(700 * var(--u));z-index:5}
-.logo{font-size:calc(170 * var(--u));line-height:1.32;letter-spacing:var(--ls, .07em);white-space:nowrap}
+/* 상단바: 화면 맨 위에 고정. 지금 보는 섹션에 맞춰 색이 바뀌어요
+   (인트로: 투명 + 흰 글자, 챕터1: 흰 바탕 + 검은 글자, 챕터2: 검은 바탕 + 흰 글자) */
+.topbar{position:fixed;inset:0 0 auto 0;height:calc(640 * var(--u));z-index:10;color:var(--white);
+  transition:background-color .35s ease, color .35s ease;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.topbar[data-theme="intro"]{background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none}
+.topbar[data-theme="chapter1"]{background:rgba(255,255,255,.86);color:var(--black)}
+.topbar[data-theme="chapter2"]{background:rgba(0,0,0,.72);color:var(--white)}
+.logo{font-size:calc(170 * var(--u));line-height:1.32;letter-spacing:.02em;white-space:nowrap}
+.nav.on{text-decoration:underline;text-underline-offset:.25em;text-decoration-thickness:1px}
 .nav{font-size:calc(100 * var(--u));line-height:1.32;letter-spacing:-.02em;white-space:nowrap;transition:opacity .2s}
 .nav:hover{opacity:.5}
 .dot{--y:348;width:calc(17 * var(--u));height:calc(17 * var(--u));border-radius:50%;background:currentColor}

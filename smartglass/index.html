@@ -15,37 +15,13 @@
   --x 왼쪽, --y 위, --w 폭, --h 높이. 피그마에서 레이어를 선택했을 때 보이는 X, Y, W, H 값을 그대로 옮기면 돼요.
 -->
 
-<!-- ============ 영상 인트로 ============ -->
-<section class="sec intro" id="intro" style="--h:7038">
-  <!-- 영상을 넣으려면 video 폴더에 파일을 올리고 아래 source 줄의 주석을 풀어 주세요 -->
-  <video class="a box media kenburns" style="--x:0;--y:0;--w:11261;--h:7038" poster="img/intro-desert.jpg" autoplay muted loop playsinline>
-    <!-- <source src="video/intro.mp4" type="video/mp4"> -->
-  </video>
-
-  <header class="bar on-dark">
-    <a class="a logo" href="#intro" style="--x:200;--y:234">SmartGlass</a>
-    <i class="a dot" style="--x:1839"></i>
-    <div class="a tc" style="--x:2263;--y:281" aria-label="타임코드"><span class="n">01</span><span class="c" style="--o:276">:</span><span class="n" style="--o:429">01</span><span class="c" style="--o:705">:</span><span class="n" style="--o:858">01</span></div>
-    <i class="a dot" style="--x:3680"></i>
-    <i class="a dot" style="--x:5521"></i>
-    <a class="a nav" href="#chapter1" style="--x:5681;--y:281">Gallery</a>
-    <i class="a dot" style="--x:7362"></i>
-    <a class="a nav" href="#chapter2" style="--x:7522;--y:281">PhotoBooth</a>
-    <i class="a dot" style="--x:9203"></i>
-    <a class="a nav" href="#about" style="--x:9363;--y:281">About</a>
-    <i class="a dot" style="--x:11044"></i>
-  </header>
-</section>
-
-<!-- ============ 챕터 1 (흰 바탕) ============ -->
-<section class="sec chapter1" id="chapter1" style="--h:53777">
-  <img class="a box reveal" style="--x:0;--y:26135;--w:11261;--h:10866" src="img/c1-desert-bg.jpg" alt="사막 풍경" loading="lazy">
-
-  <header class="bar on-light">
-    <a class="a logo" href="#intro" style="--x:200;--y:234;--ls:.02em">SmartGlass</a>
-    <i class="a dot" style="--x:1834"></i>
-    <div class="a tc" style="--x:2105;--y:281" aria-label="타임코드"><span class="n">01</span><span class="c" style="--o:276">:</span><span class="n" style="--o:429">01</span><span class="c" style="--o:705">:</span><span class="n" style="--o:858">01</span></div>
-    <i class="a dot" style="--x:3369"></i>
+<!-- ============ 상단바: 스크롤해도 맨 위에 붙어 있어요 ============ -->
+<header class="topbar" data-theme="intro">
+  <a class="a logo" href="#intro" style="--x:200;--y:234">SmartGlass</a>
+  <i class="a dot" style="--x:1834"></i>
+  <div class="a tc" style="--x:2105;--y:281" aria-label="타임코드"><span class="n">01</span><span class="c" style="--o:276">:</span><span class="n" style="--o:429">01</span><span class="c" style="--o:705">:</span><span class="n" style="--o:858">01</span></div>
+  <i class="a dot" style="--x:3369"></i>
+  <nav aria-label="주 메뉴">
     <i class="a dot" style="--x:4904"></i>
     <a class="a nav" href="#intro" style="--x:5082;--y:281">Intro</a>
     <i class="a dot" style="--x:6439"></i>
@@ -54,8 +30,23 @@
     <a class="a nav" href="#chapter1" style="--x:8152;--y:281">Gallery</a>
     <i class="a dot" style="--x:9509"></i>
     <a class="a nav" href="#chapter2" style="--x:9687;--y:281">PhotoBooth</a>
-    <i class="a dot" style="--x:11044"></i>
-  </header>
+  </nav>
+  <i class="a dot" style="--x:11044"></i>
+</header>
+
+<!-- ============ 영상 인트로 ============ -->
+<section class="sec intro" id="intro" style="--h:7038">
+  <!-- 영상을 넣으려면 video 폴더에 파일을 올리고 아래 source 줄의 주석을 풀어 주세요 -->
+  <video class="a box media kenburns" style="--x:0;--y:0;--w:11261;--h:7038" poster="img/intro-desert.jpg" autoplay muted loop playsinline>
+    <!-- <source src="video/intro.mp4" type="video/mp4"> -->
+  </video>
+
+</section>
+
+<!-- ============ 챕터 1 (흰 바탕) ============ -->
+<section class="sec chapter1" id="chapter1" style="--h:53777">
+  <img class="a box reveal" style="--x:0;--y:26135;--w:11261;--h:10866" src="img/c1-desert-bg.jpg" alt="사막 풍경" loading="lazy">
+
 
   <p class="a t num" style="--x:2386;--y:2742">01.</p>
   <p class="a t num" style="--x:2386;--y:5564">akjshdqwe
@@ -89,21 +80,6 @@ askjfhsadfjhdjfierfgsdffg</p>
 <section class="sec chapter2" id="chapter2" style="--h:53777">
   <img class="a box" style="--x:191;--y:9610;--w:11070;--h:6373" src="img/c2-city-bg.jpg" alt="" loading="lazy">
 
-  <header class="bar on-dark">
-    <a class="a logo" href="#intro" style="--x:200;--y:234;--ls:.02em">SmartGlass</a>
-    <i class="a dot" style="--x:1834"></i>
-    <div class="a tc" style="--x:2105;--y:281" aria-label="타임코드"><span class="n">01</span><span class="c" style="--o:276">:</span><span class="n" style="--o:429">01</span><span class="c" style="--o:705">:</span><span class="n" style="--o:858">01</span></div>
-    <i class="a dot" style="--x:3369"></i>
-    <i class="a dot" style="--x:4904"></i>
-    <a class="a nav" href="#intro" style="--x:5082;--y:281">Intro</a>
-    <i class="a dot" style="--x:6439"></i>
-    <a class="a nav" href="#about" style="--x:6617;--y:281">About</a>
-    <i class="a dot" style="--x:7974"></i>
-    <a class="a nav" href="#chapter1" style="--x:8152;--y:281">Gallery</a>
-    <i class="a dot" style="--x:9509"></i>
-    <a class="a nav" href="#chapter2" style="--x:9687;--y:281">PhotoBooth</a>
-    <i class="a dot" style="--x:11044"></i>
-  </header>
 
   <h2 class="a t" style="--x:4497;--y:12334;--fs:419.2;--ls:.02em">SmartGlass</h2>
   <img class="a box reveal" style="--x:1992;--y:2625;--w:7278;--h:9095" src="img/c2-portrait.jpg" alt="네온 도시 속 선글라스를 쓴 인물" loading="lazy">

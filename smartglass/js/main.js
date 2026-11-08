@@ -19,3 +19,22 @@ const io = new IntersectionObserver(entries => {
   for (const e of entries) if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
 }, { rootMargin: '0px 0px -8% 0px' });
 document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+// 3) 상단바: 지금 보고 있는 섹션의 메뉴에 밑줄, 상단바 색은 바로 아래 섹션에 맞춰요
+const bar = document.querySelector('.topbar');
+const links = [...document.querySelectorAll('.topbar .nav')];
+const secObs = new IntersectionObserver(entries => {
+  for (const e of entries) if (e.isIntersecting) {
+    links.forEach(a => a.classList.toggle('on', a.getAttribute('href') === '#' + e.target.id));
+  }
+}, { rootMargin: '-45% 0px -54% 0px' });
+document.querySelectorAll('section[id]').forEach(s => secObs.observe(s));
+const bands = [...document.querySelectorAll('section[id]')];
+function themeBar() {
+  const y = bar.offsetHeight / 2;
+  const s = bands.find(b => { const r = b.getBoundingClientRect(); return r.top <= y && r.bottom > y; });
+  if (s) bar.dataset.theme = s.id;
+}
+addEventListener('scroll', themeBar, { passive: true });
+addEventListener('resize', themeBar);
+themeBar();
