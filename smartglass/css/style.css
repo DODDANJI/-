@@ -110,8 +110,9 @@ section img[data-title],.gitem img{cursor:zoom-in}
   background:transparent;color:var(--fg);transition:background-color .45s ease}
 .lightbox[data-theme="dark"]{--bg:#000;--fg:var(--white);--mute:#9a9a9a;--line:rgba(255,255,255,.16)}
 .lightbox.on{background:var(--bg)}
-.lb-stage{position:relative;min-height:0;overflow:hidden}
-.lb-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity .18s}
+.lb-stage{position:relative;min-height:0;overflow:hidden;cursor:zoom-out}
+/* 사진 전체가 보이게(잘리지 않음), 왼쪽 끝에 붙여서 화면 높이만큼 */
+.lb-img{position:absolute;left:0;top:0;height:100%;width:auto;max-width:100%;object-fit:contain;object-position:left center;cursor:default;transition:opacity .18s}
 .lb-info{align-self:end;padding:0 40px 48px 40px;display:flex;flex-direction:column;gap:14px;
   opacity:0;transform:translateY(12px);transition:opacity .4s ease .25s, transform .5s cubic-bezier(.2,.7,.2,1) .25s}
 .lightbox.on .lb-info{opacity:1;transform:none}
@@ -131,8 +132,9 @@ section img[data-title],.gitem img{cursor:zoom-in}
 .lightbox[hidden]{display:none}
 html.lb-open{overflow:hidden}
 @media (max-width:800px){
-  .lightbox{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) auto;overflow-y:auto}
-  .lb-stage{height:70vh}
+  .lightbox{grid-template-columns:1fr;grid-template-rows:auto auto;align-content:start;overflow-y:auto}
+  .lb-stage{height:auto;min-height:auto;overflow:visible}
+  .lb-img{position:static;width:100%;height:auto;max-width:none}
   .lb-info{padding:24px 16px 32px;align-self:start}
   .lb-title{font-size:26px}
 }
