@@ -240,3 +240,31 @@ addEventListener('keydown', e => {
   if (e.key === 'ArrowLeft') step(-1);
   if (e.key === 'ArrowRight') step(1);
 }, true);
+
+// ---------------------------------------------------------------
+// 6. 마우스 커서: 빛이 번지는 동그라미가 마우스를 살짝 늦게 따라와요
+//    사진이나 버튼 위에서는 커지고, 누르는 동안은 작아져요
+// ---------------------------------------------------------------
+(() => {
+  const cur = document.querySelector('.cursor');
+  if (!cur || !matchMedia('(hover:hover) and (pointer:fine)').matches) return;
+  document.documentElement.classList.add('has-cursor');
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const FOLLOW = still ? 1 : 0.22;            // 1이면 바로 따라오고, 작을수록 늦게 따라와요
+  let x = innerWidth / 2, y = innerHeight / 2, cx = x, cy = y, raf = 0;
+  const tick = () => {
+    cx += (x - cx) * FOLLOW; cy += (y - cy) * FOLLOW;
+    cur.style.transform = `translate3d(${cx}px, ${cy}px, 0)`;
+    raf = Math.abs(x - cx) + Math.abs(y - cy) > 0.1 ? requestAnimationFrame(tick) : 0;
+  };
+  addEventListener('pointermove', e => {
+    if (e.pointerType !== 'mouse') return;
+    x = e.clientX; y = e.clientY;
+    if (!cur.classList.contains('on')) { cx = x; cy = y; cur.classList.add('on'); }
+    cur.classList.toggle('hover', !!e.target.closest('a, button, img[data-title], .gitem img, .lb-stage'));
+    if (!raf) raf = requestAnimationFrame(tick);
+  }, { passive: true });
+  document.addEventListener('mouseleave', () => cur.classList.remove('on'));
+  addEventListener('pointerdown', () => cur.classList.add('down'));
+  addEventListener('pointerup', () => cur.classList.remove('down'));
+})();

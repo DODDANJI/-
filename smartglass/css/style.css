@@ -149,3 +149,17 @@ html.lb-open{overflow:hidden}
   .kenburns{animation:none}
   .reveal{opacity:1;transform:none;transition:none}
 }
+
+/* 마우스 커서: 빛이 번지는 동그라미 (마우스가 있는 기기에서만)
+   --cur-size 크기, --cur-glow 번지는 정도. 밝은 화면에서는 어둡게, 어두운 화면에서는 밝게 보여요 */
+:root{--cur-size:18px;--cur-glow:18px}
+@media (hover:hover) and (pointer:fine){
+  html.has-cursor, html.has-cursor *{cursor:none!important}
+}
+.cursor{position:fixed;left:0;top:0;z-index:100;pointer-events:none;width:var(--cur-size);height:var(--cur-size);margin:calc(var(--cur-size) / -2) 0 0 calc(var(--cur-size) / -2);
+  border-radius:50%;background:rgba(255,255,255,.9);mix-blend-mode:difference;opacity:0;
+  box-shadow:0 0 calc(var(--cur-glow) * .5) rgba(255,255,255,.9), 0 0 var(--cur-glow) rgba(255,255,255,.7), 0 0 calc(var(--cur-glow) * 2) rgba(255,255,255,.4);
+  transition:width .3s cubic-bezier(.2,.7,.2,1), height .3s cubic-bezier(.2,.7,.2,1), margin .3s cubic-bezier(.2,.7,.2,1), opacity .25s}
+html.has-cursor .cursor.on{opacity:1}
+.cursor.hover{--cur-size:46px;background:rgba(255,255,255,.35)}
+.cursor.down{--cur-size:12px}
