@@ -38,3 +38,39 @@ function themeBar() {
 addEventListener('scroll', themeBar, { passive: true });
 addEventListener('resize', themeBar);
 themeBar();
+
+// 4) 갤러리 그리드 크기 버튼: GSAP Flip으로 사진들이 새 자리로 차례차례 미끄러져요
+const GRID = {
+  duration: 1,      // 한 장이 옮겨 가는 시간(초)
+  stagger: 0.35,    // 첫 장과 마지막 장이 출발하는 시간 차(초). 클수록 더 쭈루룩
+  from: 'start',    // 출발 순서: 'start' 앞에서부터, 'end' 뒤에서부터, 'center', 'random'
+  flash: true,      // 옮겨 가는 동안 살짝 흐려지고 밝아지는 효과
+};
+const grid = document.querySelector('.ggrid');
+const sizeBtns = [...document.querySelectorAll('.gsize button')];
+let busy = false;
+sizeBtns.forEach(btn => btn.addEventListener('click', () => {
+  const size = btn.dataset.size;
+  if (busy || size === grid.dataset.size) return;
+  sizeBtns.forEach(b => { b.classList.toggle('active', b === btn); b.setAttribute('aria-pressed', b === btn); });
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!window.Flip || reduce) { grid.dataset.size = size; return; }
+  busy = true;
+  const items = grid.querySelectorAll('.gitem');
+  const state = Flip.getState(items);
+  grid.dataset.size = size;
+  const tl = Flip.from(state, {
+    duration: GRID.duration, ease: 'expo.inOut', absolute: true,
+    stagger: { amount: GRID.stagger, from: GRID.from },
+    onComplete: () => { busy = false; },
+  });
+  if (GRID.flash) tl.fromTo(items, { filter: 'blur(0px) brightness(100%)' }, {
+    duration: GRID.duration, clearProps: 'filter',
+    stagger: { amount: GRID.stagger, from: GRID.from },
+    keyframes: [
+      { filter: 'blur(6px) brightness(150%)', duration: GRID.duration * 0.45, ease: 'power2.in' },
+      { filter: 'blur(0px) brightness(100%)', duration: GRID.duration * 0.55, ease: 'power2.out' },
+    ],
+  }, 0);
+}));
+if (window.gsap && window.Flip) gsap.registerPlugin(Flip);
