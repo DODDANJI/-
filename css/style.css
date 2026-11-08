@@ -13,6 +13,64 @@
   --gutter:clamp(0px,1.6vw,24px);
   --s1:12px; --s3:clamp(16px,1.2vw,18px); --s4:clamp(20px,1.8vw,26px);
 }
+
+/* =====================================================================
+   레이아웃 설정: 숫자만 바꾸면 배치가 바뀌어요. 자세한 예시는 README.md
+   - 칸(col): 화면을 12칸으로 나눈 그리드에서 "시작선 / 끝선". 1 / 13 이 전체 폭.
+   - 비율(ratio): 가로 / 세로. 3 / 4 는 세로 사진, 16 / 10 은 가로 사진.
+   - vw: 화면 너비의 %. 4vw = 화면 너비의 4%. vh: 화면 높이의 %.
+   - 여기 값은 데스크톱 기준이에요. 태블릿·휴대폰 배치는 파일 아래쪽
+     "tablet", "phone" 블록에서 따로 정해요.
+   ===================================================================== */
+:root{
+  /* 커버 */
+  --cover-height: 100svh;          /* 커버 높이. 100svh = 화면 한 장 */
+  --soft-size: 25vw;               /* SOFT 글자 크기 */
+  --soft-width: 50;                /* SOFT 글자 폭 (50 = 가장 좁게, 150 = 가장 넓게) */
+  --arch-size: 7.4vw;              /* ARCHITECTURE 글자 크기 */
+  --arch-width: 150;               /* ARCHITECTURE 글자 폭 */
+  --headline-bottom: 19vh;         /* 헤드라인이 화면 아래에서 떨어진 거리 */
+  --cover-top-text: 9vh;           /* 왼쪽 위 크레딧과 오른쪽 세로 제목의 위치 */
+  --ko-title-size: 2.4vw;          /* 세로 한글 제목 크기 */
+
+  /* 리드 (커버 바로 아래) */
+  --space-open: 9vw;               /* 커버와 리드 사이 여백 */
+  --stand-col: 2 / 7;              /* 리드 문단 칸 */
+  --stand-size: 1.8vw;             /* 리드 문단 글자 크기 */
+  --portrait-col: 8 / 12;          /* 새틴 사진 칸 */
+  --portrait-ratio: 3 / 4;         /* 새틴 사진 비율 */
+  --portrait-top: 4vw;             /* 새틴 사진을 아래로 내리는 거리 */
+
+  /* 전시 전경 */
+  --space-room: 11vw;              /* 위 섹션과의 여백 */
+  --room-col: 1 / 10;              /* 전경 사진 칸 */
+  --room-ratio: 16 / 10;           /* 전경 사진 비율 */
+  --label-col: 10 / 13;            /* 작품 캡션 칸 */
+
+  /* 에세이 */
+  --space-essay: 10vw;
+  --pull-col: 3 / 12;              /* 인용문 칸 */
+  --pull-size: 4.2vw;              /* 인용문 글자 크기 */
+  --detail-col: 1 / 4;             /* 니트 사진 칸 */
+  --detail-ratio: 1 / 1;           /* 니트 사진 비율 */
+  --detail-top: 8vw;               /* 니트 사진을 아래로 내리는 거리 */
+  --body-col: 5 / 10;              /* 본문 칸 */
+  --notes-col: 10 / 13;            /* 주석 칸 */
+
+  /* 전시 정보 */
+  --space-show: 12vw;
+  --show-info-col: 1 / 7;          /* 전시 제목과 정보 표 칸 */
+  --show-title-size: 4.4vw;        /* 전시 제목 글자 크기 */
+  --look-col: 8 / 12;              /* 룩 사진 칸 */
+  --look-ratio: 3 / 4;             /* 룩 사진 비율 */
+  --look-top: 7vw;                 /* 룩 사진을 아래로 내리는 거리 */
+
+  /* 목차 이미지 그리드 */
+  --space-contents: 12vw;
+  --contents-count: 4;             /* 한 줄에 놓을 이미지 수 */
+  --contents-ratio: 4 / 5;         /* 목차 이미지 비율 */
+  --contents-gap: 2px;             /* 이미지 사이 간격 */
+}
 *{box-sizing:border-box}
 html{background:var(--paper)}
 body{
@@ -46,7 +104,7 @@ a:focus-visible{outline:2px solid var(--cobalt);outline-offset:3px}
 .cap .x,.reel .t .x{display:inline;color:inherit;opacity:1}
 
 /* ---------- full-bleed cover ---------- */
-.hero{position:relative;margin-inline:calc(50% - 50vw);height:clamp(560px,100svh,1080px);overflow:hidden;background:var(--paper);isolation:isolate}
+.hero{position:relative;margin-inline:calc(50% - 50vw);height:var(--cover-height);min-height:560px;max-height:1080px;overflow:hidden;background:var(--paper);isolation:isolate}
 .hero>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .hero-ui{position:absolute;inset:0;padding-inline:max(16px,env(safe-area-inset-left,0px)) max(16px,env(safe-area-inset-right,0px))}
 .hero-ui .page{position:relative;height:100%}
@@ -63,15 +121,15 @@ a:focus-visible{outline:2px solid var(--cobalt);outline-offset:3px}
 .mast a{padding-block:8px;margin-block:-8px}  /* larger tap area, same layout */
 .mast a:hover{text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px}
 
-.kicker{position:absolute;left:var(--gutter);top:clamp(70px,9vh,110px);max-width:22em;margin:0}
+.kicker{position:absolute;left:var(--gutter);top:clamp(70px,var(--cover-top-text),110px);max-width:22em;margin:0}
 .kicker span{color:inherit;opacity:.8}
 .kicker .ttl{opacity:1}
-.ko-vert{position:absolute;right:var(--gutter);top:clamp(70px,9vh,110px);writing-mode:vertical-rl;font-family:var(--serif);font-weight:300;font-size:clamp(22px,2.4vw,38px);line-height:1;letter-spacing:.1em;margin:0}
+.ko-vert{position:absolute;right:var(--gutter);top:clamp(70px,var(--cover-top-text),110px);writing-mode:vertical-rl;font-family:var(--serif);font-weight:300;font-size:clamp(22px,var(--ko-title-size),38px);line-height:1;letter-spacing:.1em;margin:0}
 
-.headline{position:absolute;left:var(--gutter);right:var(--gutter);bottom:clamp(150px,19vh,210px);margin:0;pointer-events:none;
+.headline{position:absolute;left:var(--gutter);right:var(--gutter);bottom:clamp(150px,var(--headline-bottom),60vh);margin:0;pointer-events:none;
   font-family:var(--display);font-weight:800;line-height:.8;text-transform:uppercase}
-.headline .h1{display:block;font-size:clamp(110px,25vw,420px);font-variation-settings:"wdth" 50;letter-spacing:-.02em}
-.headline .h2{display:block;font-size:clamp(24px,7.4vw,136px);white-space:nowrap;font-variation-settings:"wdth" 150;font-weight:300;letter-spacing:-.035em;margin-top:clamp(4px,1vw,14px)}
+.headline .h1{display:block;font-size:clamp(110px,var(--soft-size),420px);font-variation-settings:"wdth" var(--soft-width);letter-spacing:-.02em}
+.headline .h2{display:block;font-size:clamp(24px,var(--arch-size),136px);white-space:nowrap;font-variation-settings:"wdth" var(--arch-width);font-weight:300;letter-spacing:-.035em;margin-top:clamp(4px,1vw,14px)}
 
 /* film strip over the cover */
 .strip{position:absolute;left:var(--gutter);right:var(--gutter);bottom:18px}
@@ -90,13 +148,13 @@ a:focus-visible{outline:2px solid var(--cobalt);outline-offset:3px}
 .reel .t span{display:block;opacity:.8}
 
 /* ---------- opening text ---------- */
-.open{padding-top:clamp(70px,9vw,140px);align-items:start}
-.stand{grid-column:2/7;margin:0;font-size:var(--s4);line-height:1.6;font-weight:300;text-wrap:pretty}
-.credits{grid-column:2/7;display:grid;grid-template-columns:auto 1fr;gap:3px 22px;margin:32px 0 0}
+.open{padding-top:clamp(70px,var(--space-open),140px);align-items:start}
+.stand{grid-column:var(--stand-col);margin:0;font-size:clamp(20px,var(--stand-size),26px);line-height:1.6;font-weight:300;text-wrap:pretty}
+.credits{grid-column:var(--stand-col);display:grid;grid-template-columns:auto 1fr;gap:3px 22px;margin:32px 0 0}
 .credits dt{color:var(--mute)}
 .credits dd{margin:0;font-weight:600}
-.portrait{grid-column:8/12;grid-row:1/4;margin:clamp(0px,4vw,60px) 0 0}
-.portrait img{width:100%;aspect-ratio:3/4;object-fit:cover}
+.portrait{grid-column:var(--portrait-col);grid-row:1/4;margin:clamp(0px,var(--portrait-top),60px) 0 0}
+.portrait img{width:100%;aspect-ratio:var(--portrait-ratio);object-fit:cover}
 
 /* ---------- camera overlay on stills ---------- */
 .media{position:relative;overflow:hidden}
@@ -105,50 +163,49 @@ a:focus-visible{outline:2px solid var(--cobalt);outline-offset:3px}
 .tc span:nth-child(n+3){align-self:end}
 
 /* ---------- installation spread ---------- */
-.spread{padding-top:clamp(90px,11vw,180px);align-items:end}
-.room{grid-column:1/10;margin:0}
-.room img{width:100%;aspect-ratio:16/10;object-fit:cover}
-.label{grid-column:10/13;align-self:end}
+.spread{padding-top:clamp(90px,var(--space-room),180px);align-items:end}
+.room{grid-column:var(--room-col);margin:0}
+.room img{width:100%;aspect-ratio:var(--room-ratio);object-fit:cover}
+.label{grid-column:var(--label-col);align-self:end}
 .label .cap{margin:0}
 .label .work{margin-top:10px;padding-left:14px;font-family:var(--serif);font-size:var(--s3);line-height:1.5}
 .label .work small{display:block;font-family:var(--util);font-size:var(--s1);color:var(--mute);margin-top:6px}
 
 /* ---------- essay ---------- */
-.essay{padding-top:clamp(90px,10vw,160px);row-gap:clamp(40px,5vw,80px)}
-.pull{grid-column:3/12;margin:0;font-family:var(--serif);font-weight:200;font-size:clamp(28px,4.2vw,68px);line-height:1.24;letter-spacing:-.02em;text-wrap:balance}
+.essay{padding-top:clamp(90px,var(--space-essay),160px);row-gap:clamp(40px,5vw,80px)}
+.pull{grid-column:var(--pull-col);margin:0;font-family:var(--serif);font-weight:200;font-size:clamp(28px,var(--pull-size),68px);line-height:1.24;letter-spacing:-.02em;text-wrap:balance}
 .pull p{margin:0}
 .pull cite{display:block;margin-top:22px;font-style:normal}
-.detail{grid-column:1/4;grid-row:2;align-self:start;margin:clamp(40px,8vw,140px) 0 0}
-.detail img{aspect-ratio:1;object-fit:cover;width:100%}
-.body{grid-column:5/10;grid-row:2;min-width:0;max-width:34em}
+.detail{grid-column:var(--detail-col);grid-row:2;align-self:start;margin:clamp(40px,var(--detail-top),140px) 0 0}
+.detail img{aspect-ratio:var(--detail-ratio);object-fit:cover;width:100%}
+.body{grid-column:var(--body-col);grid-row:2;min-width:0;max-width:34em}
 .body p{margin:0 0 1.2em;text-wrap:pretty}
 .body p:first-of-type::first-letter{font-family:var(--display);font-weight:800;font-variation-settings:"wdth" 50;float:left;font-size:5.4em;line-height:.78;margin:.06em .12em 0 0;color:var(--cobalt)}
 .body h3{font-family:var(--util);font-weight:600;font-size:var(--s3);line-height:1.3;margin:2.2em 0 .7em}
-.notes{grid-column:10/13;grid-row:2;align-self:start;padding-top:40px;display:grid;gap:18px}
+.notes{grid-column:var(--notes-col);grid-row:2;align-self:start;padding-top:40px;display:grid;gap:18px}
 .notes p{margin:0}
 .notes sup{color:var(--cobalt);font-weight:600}
 
 /* ---------- exhibition ---------- */
-.show{padding-top:clamp(100px,12vw,200px);align-items:start}
-.show-info{grid-column:1/7;display:grid;gap:clamp(28px,3vw,44px)}
-.show-title{margin:0;font-family:var(--serif);font-weight:300;font-size:clamp(34px,4.4vw,72px);line-height:1.08;letter-spacing:-.025em}
-.show-title small{display:block;font-family:var(--util);font-size:var(--s1);font-weight:600;letter-spacing:.005em;text-transform:uppercase;margin-bottom:18px}
+.show{padding-top:clamp(100px,var(--space-show),200px);align-items:start}
+.show-info{grid-column:var(--show-info-col);display:grid;gap:clamp(28px,3vw,44px)}
+.show-title{margin:0;font-family:var(--serif);font-weight:300;font-size:clamp(34px,var(--show-title-size),72px);line-height:1.08;letter-spacing:-.025em}
 .facts{display:grid;grid-template-columns:minmax(5.5em,auto) 1fr;margin:0;border-top:1px solid var(--ink)}
 .facts dt,.facts dd{padding:11px 0;border-bottom:1px solid var(--rule);margin:0}
 .facts dt{color:var(--mute)}
 .facts dd{font-weight:600;font-variant-numeric:tabular-nums}
-.look{grid-column:8/12;margin:clamp(0px,7vw,130px) 0 0}
-.look img{width:100%;aspect-ratio:3/4;object-fit:cover}
+.look{grid-column:var(--look-col);margin:clamp(0px,var(--look-top),130px) 0 0}
+.look img{width:100%;aspect-ratio:var(--look-ratio);object-fit:cover}
 
 /* ---------- contents as a flush image grid ---------- */
-.contents{padding-top:clamp(100px,12vw,200px)}
+.contents{padding-top:clamp(100px,var(--space-contents),200px)}
 .contents-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px;margin-bottom:22px}
 .contents-head h2{margin:0;font-family:var(--serif);font-weight:300;font-size:var(--s4)}
-.flush{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2px;list-style:none;margin:0;padding:0}
+.flush{display:grid;grid-template-columns:repeat(var(--contents-count),minmax(0,1fr));gap:var(--contents-gap);list-style:none;margin:0;padding:0}
 .flush a{display:flex;flex-direction:column;height:100%}
 .flush .cap{margin:0 0 12px;min-height:4.2em}
 .flush .media{display:block;margin-top:auto}
-.flush img{width:100%;aspect-ratio:4/5;object-fit:cover}
+.flush img{width:100%;aspect-ratio:var(--contents-ratio);object-fit:cover}
 .flush a:hover b{color:var(--cobalt)}
 .flush .here b{color:var(--cobalt)}
 
@@ -160,7 +217,7 @@ a:focus-visible{outline:2px solid var(--cobalt);outline-offset:3px}
 .foot .colophon{grid-column:9/13}
 .foot .colophon p{margin:0 0 6px}
 
-/* ---------- tablet ---------- */
+/* ---------- tablet (화면 너비 1000px 이하): 여기 칸 값이 위 설정보다 우선해요 ---------- */
 @media (max-width:1000px){
   .mast{grid-template-columns:repeat(4,minmax(0,1fr));row-gap:8px}
   .mast .blank{display:none}
@@ -176,7 +233,7 @@ a:focus-visible{outline:2px solid var(--cobalt);outline-offset:3px}
   .look{grid-column:5/13;margin-top:48px}
   .flush{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:28px}
 }
-/* ---------- phone ---------- */
+/* ---------- phone (화면 너비 640px 이하): 여기 칸 값이 위 설정보다 우선해요 ---------- */
 @media (max-width:640px){
   .mast{grid-template-columns:repeat(2,minmax(0,1fr))}
   .mast .issue{display:none}
