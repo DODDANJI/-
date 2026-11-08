@@ -14,9 +14,13 @@
     color: '#141414'   // colour of the cells
   };
 
-  const ready = img => img.complete && img.naturalWidth
+  // Resolves once the image has loaded or failed; callers check naturalWidth.
+  const ready = img => img.complete
     ? Promise.resolve()
-    : new Promise(r => img.addEventListener('load', r, { once: true }));
+    : new Promise(r => {
+        img.addEventListener('load', r, { once: true });
+        img.addEventListener('error', r, { once: true });
+      });
 
   // Source rectangle that reproduces object-fit: cover for a w×h box.
   function coverRect(img, w, h) {
@@ -98,6 +102,8 @@
     }
     play() {
       cancelAnimationFrame(this.raf);
+      // a missing image is shown as the browser would, never left hidden
+      if (!this.img.naturalWidth) { this.img.style.visibility = ''; this.canvas.hidden = true; return; }
       this.img.style.visibility = 'hidden';
       this.canvas.hidden = false;
       this.size();
@@ -149,7 +155,7 @@
     const c = document.createElement('canvas');
     c.setAttribute('aria-hidden', 'true');
     t.append(c);
-    ready(img).then(() => pixelate(c, img, 16));
+    ready(img).then(() => { if (img.naturalWidth) pixelate(c, img, 16); });
   });
 
   /* ---------- header timecode and strip progress ---------- */
