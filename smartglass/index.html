@@ -27,7 +27,7 @@
     <i class="a dot" style="--x:6439"></i>
     <a class="a nav" href="#about" style="--x:6617;--y:281">About</a>
     <i class="a dot" style="--x:7974"></i>
-    <a class="a nav" href="#gallery" style="--x:8152;--y:281">Gallery</a>
+    <a class="a nav" href="#chapter1" style="--x:8152;--y:281">Gallery</a>
     <i class="a dot" style="--x:9509"></i>
     <a class="a nav" href="#chapter2" style="--x:9687;--y:281">PhotoBooth</a>
   </nav>
@@ -132,41 +132,28 @@ asdfffffffffffsdfsfsdf
 qfhjfjrtreteryuyu</p>
 </section>
 
-<!-- ============ 갤러리: 버튼으로 그리드 크기를 바꿔요 ============ -->
-<section class="gallery" id="gallery">
-  <div class="ghead">
-    <h2>Gallery</h2>
-    <!-- 버튼을 더하거나 빼려면 data-size 값과 css의 같은 이름 줄을 함께 고쳐요 -->
-    <div class="gsize" role="group" aria-label="그리드 크기">
-      <button type="button" data-size="50">50%</button>
-      <button type="button" data-size="75">75%</button>
-      <button type="button" data-size="100" class="active" aria-pressed="true">100%</button>
-      <button type="button" data-size="125">125%</button>
-      <button type="button" data-size="150">150%</button>
-    </div>
-  </div>
-  <div class="ggrid" data-size="100">
-    <figure class="gitem"><img src="img/c1-portrait.jpg" alt="" loading="lazy" style="aspect-ratio:1102/1382"><figcaption><span>01</span>Sand Veil</figcaption></figure>
-    <figure class="gitem"><img src="img/c2-look-01.jpg" alt="" loading="lazy" style="aspect-ratio:636/798"><figcaption><span>02</span>Look 01</figcaption></figure>
-    <figure class="gitem"><img src="img/c1-thumb-01.jpg" alt="" loading="lazy" style="aspect-ratio:481/601"><figcaption><span>03</span>Amber Lens</figcaption></figure>
-    <figure class="gitem"><img src="img/c2-flyer.jpg" alt="" loading="lazy" style="aspect-ratio:2883/2578"><figcaption><span>04</span>Night Flyer</figcaption></figure>
-    <figure class="gitem"><img src="img/c1-glass-tall.jpg" alt="" loading="lazy" style="aspect-ratio:1561/2035"><figcaption><span>05</span>White Coat</figcaption></figure>
-    <figure class="gitem"><img src="img/c2-thumb-02.jpg" alt="" loading="lazy" style="aspect-ratio:605/807"><figcaption><span>06</span>Chrome Night</figcaption></figure>
-    <figure class="gitem"><img src="img/c1-closeup.jpg" alt="" loading="lazy" style="aspect-ratio:2883/1404"><figcaption><span>07</span>Close Light</figcaption></figure>
-    <figure class="gitem"><img src="img/c2-look-02.jpg" alt="" loading="lazy" style="aspect-ratio:636/848"><figcaption><span>08</span>Look 02</figcaption></figure>
-    <figure class="gitem"><img src="img/intro-desert.jpg" alt="" loading="lazy" style="aspect-ratio:2883/1802"><figcaption><span>09</span>Desert Rover</figcaption></figure>
-    <figure class="gitem"><img src="img/c1-thumb-02.jpg" alt="" loading="lazy" style="aspect-ratio:479/601"><figcaption><span>10</span>Dune Frame</figcaption></figure>
-    <figure class="gitem"><img src="img/c2-portrait.jpg" alt="" loading="lazy" style="aspect-ratio:1864/2329"><figcaption><span>11</span>Neon Gaze</figcaption></figure>
-    <figure class="gitem"><img src="img/c1-glass-side.jpg" alt="" loading="lazy" style="aspect-ratio:1043/1304"><figcaption><span>12</span>Dead Tree</figcaption></figure>
-    <figure class="gitem"><img src="img/c2-look-03.jpg" alt="" loading="lazy" style="aspect-ratio:636/795"><figcaption><span>13</span>Look 03</figcaption></figure>
-    <figure class="gitem"><img src="img/c1-desert-bg.jpg" alt="" loading="lazy" style="aspect-ratio:2883/2782"><figcaption><span>14</span>Red Canyon</figcaption></figure>
-    <figure class="gitem"><img src="img/c2-thumb-01.jpg" alt="" loading="lazy" style="aspect-ratio:1067/807"><figcaption><span>15</span>Upside</figcaption></figure>
-    <figure class="gitem"><img src="img/c2-look-04.jpg" alt="" loading="lazy" style="aspect-ratio:636/794"><figcaption><span>16</span>Look 04</figcaption></figure>
-    <figure class="gitem"><img src="img/c2-city-bg.jpg" alt="" loading="lazy" style="aspect-ratio:2834/1632"><figcaption><span>17</span>City Haze</figcaption></figure>
-  </div>
-</section>
-
 <span id="about"></span>
+
+<!-- ============ 그리드 보기 ============
+  챕터1이나 챕터2로 넘어가면 화면 아래에 작은 그리드 버튼이 떠요.
+  누르면 그 챕터의 사진들이 제자리에서 날아와 그리드로 모이고, 다시 누르면 원래 자리로 돌아가요. -->
+<div class="gridview" hidden>
+  <div class="ggrid" data-size="100"></div>
+</div>
+<div class="gdock">
+  <button type="button" class="gd-toggle" aria-pressed="false" aria-label="그리드로 보기">
+    <svg class="i-grid" width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><rect width="6" height="6"/><rect x="8" width="6" height="6"/><rect y="8" width="6" height="6"/><rect x="8" y="8" width="6" height="6"/></svg>
+    <svg class="i-close" width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 2l10 10M12 2L2 12"/></svg>
+  </button>
+  <!-- 버튼을 더하거나 빼려면 data-size 값과 css의 같은 숫자 줄을 함께 고쳐요 -->
+  <div class="gsize" role="group" aria-label="그리드 크기">
+    <button type="button" data-size="50">50%</button>
+    <button type="button" data-size="75">75%</button>
+    <button type="button" data-size="100" class="active" aria-pressed="true">100%</button>
+    <button type="button" data-size="125">125%</button>
+    <button type="button" data-size="150">150%</button>
+  </div>
+</div>
 
 <script src="js/vendor/gsap.min.js"></script>
 <script src="js/vendor/Flip.min.js"></script>

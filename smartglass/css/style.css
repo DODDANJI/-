@@ -35,7 +35,7 @@ img.box,video.box{object-fit:cover}
   transition:background-color .35s ease, color .35s ease;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
 .topbar[data-theme="intro"]{background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none}
 .topbar[data-theme="chapter1"]{background:rgba(255,255,255,.86);color:var(--black)}
-.topbar[data-theme="chapter2"],.topbar[data-theme="gallery"]{background:rgba(0,0,0,.72);color:var(--white)}
+.topbar[data-theme="chapter2"]{background:rgba(0,0,0,.72);color:var(--white)}
 .logo{font-size:calc(170 * var(--u));line-height:1.32;letter-spacing:.02em;white-space:nowrap}
 .nav.on{text-decoration:underline;text-underline-offset:.25em;text-decoration-thickness:1px}
 .nav{font-size:calc(100 * var(--u));line-height:1.32;letter-spacing:-.02em;white-space:nowrap;transition:opacity .2s}
@@ -53,39 +53,55 @@ img.box,video.box{object-fit:cover}
 .t.small{font-size:calc(105.2 * var(--u))}
 .t.center{text-align:center;width:calc(var(--w) * var(--u))}
 
-/* 갤러리: 버튼으로 칸 수가 바뀌는 사진 그리드
-   data-size 값마다 한 줄에 놓이는 사진 수예요. 숫자를 바꾸면 칸 수가 바뀌어요 */
-.gallery{min-height:100vh;background:var(--black);color:var(--white);padding:calc(900 * var(--u)) calc(200 * var(--u)) calc(1600 * var(--u))}
-.ghead{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:calc(500 * var(--u))}
-.ghead h2{font-weight:400;font-size:calc(419 * var(--u));letter-spacing:.02em;line-height:1}
-.gsize{display:flex;gap:1px;background:#4c4c4c;border:1px solid #4c4c4c;border-radius:999px;overflow:hidden;font-size:13px}
-.gsize button{background:var(--black);color:var(--white);border:0;font:inherit;padding:.7em 1.15em;cursor:pointer;transition:background-color .2s,color .2s;font-variant-numeric:tabular-nums}
-.gsize button.active{background:var(--white);color:var(--black)}
-.gsize button:focus-visible{outline:2px solid var(--white);outline-offset:-4px}
-@media (hover:hover) and (pointer:fine){.gsize button:not(.active):hover{background:#1a1a1a}}
+/* 그리드 보기: 챕터 위에 덮이는 화면 */
+.gridview{position:fixed;inset:0;z-index:9;overflow-y:auto;overscroll-behavior:contain;
+  padding:calc(900 * var(--u)) calc(200 * var(--u)) 120px;background:transparent;transition:background-color .7s ease}
+.gridview[data-theme="chapter1"]{color:var(--black)}
+.gridview[data-theme="chapter2"]{color:var(--white)}
+.gridview.on[data-theme="chapter1"]{background:var(--white)}
+.gridview.on[data-theme="chapter2"]{background:var(--black)}
+html.grid-open{overflow:hidden}
+html.flipping .reveal{transition:none}
+
+/* 그리드 칸 수: data-size 값마다 한 줄에 놓이는 사진 수예요 */
 .ggrid{overflow-anchor:none;display:grid;gap:calc(150 * var(--u));align-items:start;grid-template-columns:repeat(var(--cols), minmax(0,1fr))}
 .ggrid[data-size="50"]{--cols:16}
 .ggrid[data-size="75"]{--cols:10}
 .ggrid[data-size="100"]{--cols:8}
 .ggrid[data-size="125"]{--cols:6}
 .ggrid[data-size="150"]{--cols:4}
-.gitem img{width:100%;height:auto;object-fit:cover;filter:brightness(.85);transition:filter .3s}
-.gitem:hover img{filter:none}
-.gitem figcaption{margin-top:.5em;font-size:11px;letter-spacing:.03em;display:flex;gap:.8em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.gitem figcaption span{color:#8a8a8a;font-variant-numeric:tabular-nums}
-.ggrid[data-size="50"] figcaption{font-size:9px}
+.gitem img{display:block;width:100%;height:auto;object-fit:cover}
+.gitem figcaption{margin-top:.5em;font-size:11px;letter-spacing:.03em;opacity:.55;font-variant-numeric:tabular-nums;transition:opacity .4s}
+.gridview:not(.on) figcaption{opacity:0}
 @media (max-width:1024px){
   .ggrid[data-size="50"]{--cols:10}.ggrid[data-size="75"]{--cols:8}.ggrid[data-size="100"]{--cols:6}.ggrid[data-size="125"]{--cols:5}.ggrid[data-size="150"]{--cols:3}
 }
 @media (max-width:640px){
-  .gallery{padding:96px 16px 64px}
-  .ghead{flex-direction:column;align-items:flex-start;margin-bottom:24px}
-  .ghead h2{font-size:40px}
-  .gsize{font-size:12px}
+  .gridview{padding:72px 16px 110px}
   .ggrid{gap:8px}
   .ggrid[data-size="50"]{--cols:5}.ggrid[data-size="75"]{--cols:4}.ggrid[data-size="100"]{--cols:3}.ggrid[data-size="125"]{--cols:2}.ggrid[data-size="150"]{--cols:1}
-  .gitem figcaption{font-size:10px}
 }
+
+/* 아래쪽 작은 그리드 버튼 (챕터에 들어가면 나타나요) */
+.gdock{position:fixed;left:50%;bottom:22px;z-index:11;display:flex;align-items:center;gap:1px;
+  border-radius:999px;overflow:hidden;font-size:12px;border:1px solid var(--line);background:var(--line);
+  --bg:var(--black);--fg:var(--white);--line:#4c4c4c;
+  transform:translate(-50%, 140%);opacity:0;pointer-events:none;
+  transition:transform .5s cubic-bezier(.2,.7,.2,1), opacity .4s ease}
+.gdock[data-theme="chapter1"]{--bg:var(--white);--fg:var(--black);--line:#cfcfcf}
+.gdock.show{transform:translate(-50%, 0);opacity:1;pointer-events:auto}
+.gdock button{background:var(--bg);color:var(--fg);border:0;font:inherit;cursor:pointer;height:36px;transition:background-color .2s,color .2s}
+.gdock button:focus-visible{outline:2px solid var(--fg);outline-offset:-4px}
+.gd-toggle{width:44px;display:grid;place-items:center}
+.gd-toggle svg{fill:currentColor;stroke:currentColor;stroke-width:1.6}
+.gd-toggle .i-grid{stroke:none}
+.gd-toggle .i-close,.gdock.open .gd-toggle .i-grid{display:none}
+.gdock.open .gd-toggle .i-close{display:block}
+.gsize{display:flex;gap:1px;max-width:0;overflow:hidden;transition:max-width .5s cubic-bezier(.2,.7,.2,1)}
+.gdock.open .gsize{max-width:400px}
+.gsize button{padding:0 1.05em;white-space:nowrap;font-variant-numeric:tabular-nums}
+.gsize button.active{background:var(--fg);color:var(--bg)}
+@media (hover:hover) and (pointer:fine){.gdock button:not(.active):hover{opacity:.7}}
 
 /* 움직임 */
 .kenburns{animation:kenburns 24s ease-in-out infinite alternate;transform-origin:60% 55%}
