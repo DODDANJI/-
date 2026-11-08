@@ -150,16 +150,26 @@ html.lb-open{overflow:hidden}
   .reveal{opacity:1;transform:none;transition:none}
 }
 
-/* 마우스 커서: 빛이 번지는 동그라미 (마우스가 있는 기기에서만)
-   --cur-size 크기, --cur-glow 번지는 정도. 밝은 화면에서는 어둡게, 어두운 화면에서는 밝게 보여요 */
-:root{--cur-size:18px;--cur-glow:18px}
+/* 마우스 커서: 유리 렌즈 (마우스가 있는 기기에서만)
+   아래 화면을 렌즈처럼 선명하고 진하게 보여주고, 테두리에 빛이 번져요.
+   --cur-size 크기, --cur-glow 빛 번짐, --cur-tint 빛 색 */
+:root{--cur-size:22px;--cur-glow:16px;--cur-tint:150,190,255}
 @media (hover:hover) and (pointer:fine){
   html.has-cursor, html.has-cursor *{cursor:none!important}
 }
 .cursor{position:fixed;left:0;top:0;z-index:100;pointer-events:none;width:var(--cur-size);height:var(--cur-size);margin:calc(var(--cur-size) / -2) 0 0 calc(var(--cur-size) / -2);
-  border-radius:50%;background:rgba(255,255,255,.9);mix-blend-mode:difference;opacity:0;
-  box-shadow:0 0 calc(var(--cur-glow) * .5) rgba(255,255,255,.9), 0 0 var(--cur-glow) rgba(255,255,255,.7), 0 0 calc(var(--cur-glow) * 2) rgba(255,255,255,.4);
-  transition:width .3s cubic-bezier(.2,.7,.2,1), height .3s cubic-bezier(.2,.7,.2,1), margin .3s cubic-bezier(.2,.7,.2,1), opacity .25s}
+  border-radius:50%;opacity:0;
+  background:radial-gradient(circle at 32% 28%, rgba(255,255,255,.75) 0 8%, rgba(255,255,255,.12) 22%, rgba(var(--cur-tint),.10) 60%, rgba(var(--cur-tint),.22) 100%);
+  -webkit-backdrop-filter:saturate(1.4) contrast(1.1) brightness(1.06);backdrop-filter:saturate(1.4) contrast(1.1) brightness(1.06);
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.85),
+    inset 0 0 calc(var(--cur-size) * .25) rgba(var(--cur-tint),.45),
+    0 0 0 1px rgba(0,0,0,.18),
+    0 0 calc(var(--cur-glow) * .5) rgba(var(--cur-tint),.85),
+    0 0 var(--cur-glow) rgba(var(--cur-tint),.55),
+    0 0 calc(var(--cur-glow) * 2) rgba(var(--cur-tint),.3);
+  transition:width .35s cubic-bezier(.2,.7,.2,1), height .35s cubic-bezier(.2,.7,.2,1), margin .35s cubic-bezier(.2,.7,.2,1), opacity .25s}
 html.has-cursor .cursor.on{opacity:1}
-.cursor.hover{--cur-size:46px;background:rgba(255,255,255,.35)}
-.cursor.down{--cur-size:12px}
+.cursor.hover{--cur-size:84px;--cur-glow:24px}
+.cursor.down{--cur-size:14px}
+.cursor.hover.down{--cur-size:70px}
