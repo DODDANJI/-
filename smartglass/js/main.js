@@ -86,7 +86,7 @@ function openGrid() {
   grid.innerHTML = originals.map((img, i) => {
     const r = img.getBoundingClientRect();
     img.dataset.flipId = 'g' + i;
-    return `<figure class="gitem"><img src="${img.getAttribute('src')}" alt="${img.alt}" data-flip-id="g${i}" style="aspect-ratio:${(r.width / r.height).toFixed(4)}"><figcaption>${String(i + 1).padStart(2, '0')}</figcaption></figure>`;
+    return `<figure class="gitem"><img src="${img.getAttribute('src')}" alt="${img.alt}" data-i="${i}" data-flip-id="g${i}" style="aspect-ratio:${(r.width / r.height).toFixed(4)}"><figcaption>${String(i + 1).padStart(2, '0')}</figcaption></figure>`;
   }).join('');
   const state = canFlip() ? Flip.getState(originals) : null;
   originals.forEach(img => { img.classList.add('in'); img.style.visibility = 'hidden'; });
@@ -139,3 +139,104 @@ sizeBtns.forEach(btn => btn.addEventListener('click', () => {
     ],
   }, 0);
 }));
+
+// 5) 사진 크게 보기: 사진을 누르면 확대되고 오른쪽에 정보가 떠요. ← → 키로 넘기고 Esc로 닫아요
+const lb = document.querySelector('.lightbox');
+const lbImg = lb.querySelector('.lb-img');
+const photos = [...document.querySelectorAll('section img[data-title]')];
+let lbIndex = -1, lbSource = null, lbBusy = false, lbPrevId;
+const sourceFor = n => (isOpen && originals.includes(photos[n])) ? grid.querySelector(`img[data-i="${originals.indexOf(photos[n])}"]`) : photos[n];
+const chapterName = img => img.closest('.chapter1') ? 'Chapter 1 · Desert' : img.closest('.chapter2') ? 'Chapter 2 · Neon' : '';
+
+function swatches(img) {
+  try {
+    const c = document.createElement('canvas'); c.width = c.height = 24;
+    const x = c.getContext('2d', { willReadFrequently: true }); x.drawImage(img, 0, 0, 24, 24);
+    const d = x.getImageData(0, 0, 24, 24).data, buckets = {};
+    for (let i = 0; i < d.length; i += 4) {
+      const k = [d[i], d[i + 1], d[i + 2]].map(v => Math.min(255, Math.round(v / 48) * 48)).join(',');
+      buckets[k] = (buckets[k] || 0) + 1;
+    }
+    return Object.entries(buckets).sort((a, b) => b[1] - a[1]).slice(0, 4)
+      .map(([k]) => '#' + k.split(',').map(v => (+v).toString(16).padStart(2, '0')).join('').toUpperCase());
+  } catch (e) { return []; } // 파일을 직접 열면(file://) 브라우저가 색 읽기를 막아요
+}
+
+function fill(i) {
+  const img = photos[i], file = img.getAttribute('src').split('/').pop();
+  const box = img.getBoundingClientRect();
+  lbIndex = i;
+  lbImg.src = img.src; lbImg.alt = img.alt;
+  lb.querySelector('.lb-no').textContent = `${String(i + 1).padStart(2, '0')} / ${String(photos.length).padStart(2, '0')}`;
+  lb.querySelector('.lb-title').textContent = img.dataset.title;
+  lb.querySelector('.lb-desc').textContent = img.dataset.desc || '';
+  const sw = swatches(img);
+  const rows = [
+    ['챕터', chapterName(img)],
+    ['파일', file],
+    ['원본 크기', img.naturalWidth ? `${img.naturalWidth} × ${img.naturalHeight} px` : '불러오는 중'],
+    ['화면 비율', box.height ? `${(box.width / box.height).toFixed(2)} : 1` : '—'],
+    ['피그마 레이어', img.dataset.layer || '—'],
+  ];
+  if (sw.length) rows.push(['대표 색', sw.map(c => `<span class="sw" style="background:${c}" title="${c}"></span>`).join('') + `<span class="hex">${sw[0]}</span>`]);
+  lb.querySelector('.lb-props').innerHTML = rows.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join('');
+  lb.dataset.theme = img.closest('.chapter2') ? 'dark' : 'light';
+}
+
+function openLightbox(i, source) {
+  if (lbBusy) return;
+  photos[i].loading = 'eager';
+  fill(i);
+  lbSource = source;
+  lbPrevId = source.dataset.flipId; source.dataset.flipId = 'lb'; lbImg.dataset.flipId = 'lb';
+  const state = canFlip() ? Flip.getState(source) : null;
+  lb.hidden = false;
+  document.documentElement.classList.add('lb-open');
+  requestAnimationFrame(() => lb.classList.add('on'));
+  source.style.visibility = 'hidden';
+  if (!state) return;
+  lbBusy = true;
+  Flip.from(state, { targets: lbImg, duration: 0.8, ease: 'expo.inOut', absolute: true, onComplete: () => { lbBusy = false; } });
+}
+
+function closeLightbox() {
+  if (lbBusy || lb.hidden) return;
+  const src = lbSource;
+  const r = src.getBoundingClientRect();
+  const onScreen = r.bottom > 0 && r.top < innerHeight;
+  const done = () => {
+    if (lbPrevId) src.dataset.flipId = lbPrevId; else delete src.dataset.flipId; lb.hidden = true; lb.classList.remove('on'); src.style.visibility = ''; lbImg.removeAttribute('style'); document.documentElement.classList.remove('lb-open', 'flipping'); lbBusy = false; };
+  lb.classList.remove('on');
+  if (!canFlip() || !onScreen) { src.style.visibility = ''; return setTimeout(done, 350); }
+  lbBusy = true;
+  document.documentElement.classList.add('flipping');
+  const state = Flip.getState(lbImg);
+  src.style.visibility = ''; lbImg.style.visibility = 'hidden';
+  Flip.from(state, { targets: src, duration: 0.7, ease: 'expo.inOut', onComplete: done });
+}
+
+function step(d) {
+  if (lbBusy) return;
+  const n = (lbIndex + d + photos.length) % photos.length;
+  lbSource.style.visibility = '';
+  if (lbPrevId) lbSource.dataset.flipId = lbPrevId; else delete lbSource.dataset.flipId;
+  lbSource = sourceFor(n); lbPrevId = lbSource.dataset.flipId; lbSource.dataset.flipId = 'lb';
+  lbImg.style.opacity = 0;
+  setTimeout(() => { fill(n); lbImg.style.opacity = ''; }, 180);
+}
+
+photos.forEach((img, i) => img.addEventListener('click', () => openLightbox(i, img)));
+grid.addEventListener('click', e => {
+  const t = e.target.closest('img[data-i]');
+  if (t) openLightbox(photos.indexOf(originals[+t.dataset.i]), t);
+});
+lb.querySelector('.lb-close').addEventListener('click', closeLightbox);
+lb.querySelector('.lb-prev').addEventListener('click', () => step(-1));
+lb.querySelector('.lb-next').addEventListener('click', () => step(1));
+lb.querySelector('.lb-stage').addEventListener('click', e => { if (e.target !== lbImg) closeLightbox(); });
+addEventListener('keydown', e => {
+  if (lb.hidden) return;
+  if (e.key === 'Escape') { e.stopImmediatePropagation(); closeLightbox(); }
+  if (e.key === 'ArrowLeft') step(-1);
+  if (e.key === 'ArrowRight') step(1);
+}, true);
