@@ -1,0 +1,168 @@
+/* SmartGlass: 피그마 '영상 · 챕터1 · 챕터2' 프레임을 그대로 옮긴 페이지
+   모든 위치와 크기는 피그마 프레임 폭 11261을 기준으로 한 숫자예요.
+   1 단위 = 화면 폭 / 11261. 1440px 화면에서 100 단위는 약 12.8px이에요. */
+
+:root{
+  --u: calc(100vw / 11261);
+  --black: #000;
+  --white: #fff;
+  --gray: #D9D9D9;                 /* 피그마 회색 도형 */
+  --sans: "Helvetica Neue", Helvetica, Arial, "Noto Sans KR", sans-serif;
+  --ko: Inter, "Noto Sans KR", "Apple SD Gothic Neo", sans-serif;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--white);color:var(--black);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+img,video{display:block}
+
+/* 섹션: 높이는 각 section의 --h */
+.sec{position:relative;width:100%;height:calc(var(--h) * var(--u));overflow:hidden}
+.intro{background:var(--white);color:var(--white)}
+.chapter1{background:var(--white);color:var(--black)}
+.chapter2{background:var(--black);color:var(--white)}
+
+/* 자리 잡기: --x, --y, (--w, --h) */
+.a{position:absolute;left:calc(var(--x) * var(--u));top:calc(var(--y, 0) * var(--u))}
+.box{width:calc(var(--w) * var(--u));height:calc(var(--h) * var(--u))}
+img.box,video.box{object-fit:cover}
+.ph{background:var(--gray)}
+
+/* 상단바: 화면 맨 위에 고정. 바탕 투명도는 아래 rgba의 마지막 숫자(.5 = 50%)예요. 지금 보는 섹션에 맞춰 색이 바뀌어요
+   (인트로: 투명 + 흰 글자, 챕터1: 흰 바탕 + 검은 글자, 챕터2: 검은 바탕 + 흰 글자) */
+.topbar{position:fixed;inset:0 0 auto 0;height:calc(640 * var(--u));z-index:10;color:var(--white);
+  transition:background-color .35s ease, color .35s ease;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.topbar[data-theme="intro"]{background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none}
+.topbar[data-theme="chapter1"]{background:rgba(255,255,255,.5);color:var(--black)}
+.topbar[data-theme="chapter2"]{background:rgba(0,0,0,.5);color:var(--white)}
+.logo{font-size:calc(170 * var(--u));line-height:1.32;letter-spacing:.02em;white-space:nowrap}
+.nav.on{text-decoration:underline;text-underline-offset:.25em;text-decoration-thickness:1px}
+.nav{font-size:calc(100 * var(--u));line-height:1.32;letter-spacing:-.02em;white-space:nowrap;transition:opacity .2s}
+.nav:hover{opacity:.5}
+.dot{--y:348;width:calc(17 * var(--u));height:calc(17 * var(--u));border-radius:50%;background:currentColor}
+.tc{font-size:calc(100 * var(--u));line-height:1.32;height:calc(132 * var(--u));width:calc(1009 * var(--u));font-variant-numeric:tabular-nums}
+.tc span{position:absolute;top:0;left:calc(var(--o, 0) * var(--u))}
+.tc .n{letter-spacing:.39em}
+.tc .c{letter-spacing:-.02em}
+
+/* 글자 */
+.t{font-size:calc(var(--fs, 100) * var(--u));line-height:1.32;letter-spacing:var(--ls, .03em);white-space:pre;font-weight:400}
+.t.ko{font-family:var(--ko);line-height:1.21;letter-spacing:0}
+.t.big{font-size:calc(253.05 * var(--u));letter-spacing:.02em;text-transform:uppercase}
+.t.small{font-size:calc(105.2 * var(--u))}
+.t.center{text-align:center;width:calc(var(--w) * var(--u))}
+
+/* 그리드 보기: 챕터 위에 덮이는 화면 */
+.gridview{position:fixed;inset:0;z-index:9;overflow-y:auto;overscroll-behavior:contain;
+  padding:calc(900 * var(--u)) calc(200 * var(--u)) 120px;background:transparent;transition:background-color .7s ease}
+.gridview[data-theme="chapter1"]{color:var(--black)}
+.gridview[data-theme="chapter2"]{color:var(--white)}
+.gridview.on[data-theme="chapter1"]{background:var(--white)}
+.gridview.on[data-theme="chapter2"]{background:var(--black)}
+html.grid-open{overflow:hidden}
+html.flipping .reveal{transition:none}
+
+/* 그리드 칸 수: data-size 값마다 한 줄에 놓이는 사진 수예요 */
+.ggrid{overflow-anchor:none;display:grid;gap:calc(150 * var(--u));align-items:start;grid-template-columns:repeat(var(--cols), minmax(0,1fr))}
+.ggrid[data-size="50"]{--cols:16}
+.ggrid[data-size="75"]{--cols:10}
+.ggrid[data-size="100"]{--cols:8}
+.ggrid[data-size="125"]{--cols:6}
+.ggrid[data-size="150"]{--cols:4}
+.gitem img{display:block;width:100%;height:auto;object-fit:cover}
+.gitem figcaption{margin-top:.5em;font-size:11px;letter-spacing:.03em;opacity:.55;font-variant-numeric:tabular-nums;transition:opacity .4s}
+.gridview:not(.on) figcaption{opacity:0}
+@media (max-width:1024px){
+  .ggrid[data-size="50"]{--cols:10}.ggrid[data-size="75"]{--cols:8}.ggrid[data-size="100"]{--cols:6}.ggrid[data-size="125"]{--cols:5}.ggrid[data-size="150"]{--cols:3}
+}
+@media (max-width:640px){
+  .gridview{padding:72px 16px 110px}
+  .ggrid{gap:8px}
+  .ggrid[data-size="50"]{--cols:5}.ggrid[data-size="75"]{--cols:4}.ggrid[data-size="100"]{--cols:3}.ggrid[data-size="125"]{--cols:2}.ggrid[data-size="150"]{--cols:1}
+}
+
+/* 아래쪽 작은 그리드 버튼 (챕터에 들어가면 나타나요) */
+.gdock{position:fixed;left:50%;bottom:22px;z-index:11;display:flex;align-items:center;gap:1px;
+  border-radius:999px;overflow:hidden;font-size:12px;border:1px solid var(--line);background:var(--line);
+  --bg:var(--black);--fg:var(--white);--line:#4c4c4c;
+  transform:translate(-50%, 140%);opacity:0;pointer-events:none;
+  transition:transform .5s cubic-bezier(.2,.7,.2,1), opacity .4s ease}
+.gdock[data-theme="chapter1"]{--bg:var(--white);--fg:var(--black);--line:#cfcfcf}
+.gdock.show{transform:translate(-50%, 0);opacity:1;pointer-events:auto}
+.gdock button{background:var(--bg);color:var(--fg);border:0;font:inherit;cursor:pointer;height:36px;transition:background-color .2s,color .2s}
+.gdock button:focus-visible{outline:2px solid var(--fg);outline-offset:-4px}
+.gd-toggle{width:44px;display:grid;place-items:center}
+.gd-toggle svg{fill:currentColor;stroke:currentColor;stroke-width:1.6}
+.gd-toggle .i-grid{stroke:none}
+.gd-toggle .i-close,.gdock.open .gd-toggle .i-grid{display:none}
+.gdock.open .gd-toggle .i-close{display:block}
+.gsize{display:flex;gap:1px;max-width:0;overflow:hidden;transition:max-width .5s cubic-bezier(.2,.7,.2,1)}
+.gdock.open .gsize{max-width:400px}
+.gsize button{padding:0 1.05em;white-space:nowrap;font-variant-numeric:tabular-nums}
+.gsize button.active{background:var(--fg);color:var(--bg)}
+@media (hover:hover) and (pointer:fine){.gdock button:not(.active):hover{opacity:.7}}
+
+/* 사진 크게 보기 */
+section img[data-title],.gitem img{cursor:zoom-in}
+.lightbox{position:fixed;inset:0;z-index:30;display:grid;grid-template-columns:minmax(0,1fr) 340px;
+  --bg:#fff;--fg:var(--black);--mute:#6e6e6e;--line:rgba(0,0,0,.12);
+  background:transparent;color:var(--fg);transition:background-color .45s ease}
+.lightbox[data-theme="dark"]{--bg:#000;--fg:var(--white);--mute:#9a9a9a;--line:rgba(255,255,255,.16)}
+.lightbox.on{background:var(--bg)}
+.lb-stage{position:relative;min-height:0;overflow:hidden;cursor:zoom-out}
+/* 사진 전체가 보이게(잘리지 않음), 왼쪽 끝에 붙여서 화면 높이만큼 */
+.lb-img{position:absolute;left:0;top:0;height:100%;width:auto;max-width:100%;object-fit:contain;object-position:left center;cursor:default;transition:opacity .18s}
+.lb-info{align-self:end;padding:0 40px 48px 40px;display:flex;flex-direction:column;gap:14px;
+  opacity:0;transform:translateY(12px);transition:opacity .4s ease .25s, transform .5s cubic-bezier(.2,.7,.2,1) .25s}
+.lightbox.on .lb-info{opacity:1;transform:none}
+.lb-no{font-size:11px;letter-spacing:.08em;color:var(--mute);font-variant-numeric:tabular-nums}
+.lb-title{font-size:32px;font-weight:400;letter-spacing:.01em;line-height:1.1}
+.lb-desc{font-family:var(--ko);font-size:13px;line-height:1.6;color:var(--mute);max-width:32ch}
+.lb-props{display:grid;grid-template-columns:auto 1fr;gap:9px 18px;font-size:12px;border-top:1px solid var(--line);padding-top:14px;margin-top:4px}
+.lb-props dt{color:var(--mute);font-family:var(--ko)}
+.lb-props dd{display:flex;align-items:center;gap:4px;min-width:0;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.lb-props .sw{width:14px;height:14px;border-radius:2px;box-shadow:inset 0 0 0 1px var(--line)}
+.lb-props .hex{margin-left:6px;color:var(--mute)}
+.lb-nav{display:flex;gap:8px;margin-top:10px}
+.lb-nav button{background:none;color:inherit;border:1px solid var(--line);border-radius:999px;font:inherit;font-size:12px;height:34px;padding:0 14px;cursor:pointer;transition:background-color .2s}
+.lb-nav button:hover{background:var(--line)}
+.lb-nav button:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
+.lb-close{margin-left:auto;font-family:var(--ko)!important}
+.lightbox[hidden]{display:none}
+html.lb-open{overflow:hidden}
+@media (max-width:800px){
+  .lightbox{grid-template-columns:1fr;grid-template-rows:auto auto;align-content:start;overflow-y:auto}
+  .lb-stage{height:auto;min-height:auto;overflow:visible}
+  .lb-img{position:static;width:100%;height:auto;max-width:none}
+  .lb-info{padding:24px 16px 32px;align-self:start}
+  .lb-title{font-size:26px}
+}
+
+/* 움직임 */
+.kenburns{animation:kenburns 24s ease-in-out infinite alternate;transform-origin:60% 55%}
+@keyframes kenburns{from{transform:scale(1)}to{transform:scale(1.08)}}
+.reveal{opacity:0;transform:translateY(calc(120 * var(--u)));transition:opacity 1.1s ease, transform 1.1s cubic-bezier(.2,.7,.2,1)}
+.reveal.in{opacity:1;transform:none}
+
+@media (prefers-reduced-motion: reduce){
+  .kenburns{animation:none}
+  .reveal{opacity:1;transform:none;transition:none}
+}
+
+/* 마우스 커서: 유리 렌즈 (마우스가 있는 기기에서만)
+   빛 없이 얇은 테두리만 있고, 렌즈 아래 화면을 조금 더 선명하고 진하게 보여줘요.
+   --cur-size 크기 */
+:root{--cur-size:22px}
+@media (hover:hover) and (pointer:fine){
+  html.has-cursor, html.has-cursor *{cursor:none!important}
+}
+.cursor{position:fixed;left:0;top:0;z-index:100;pointer-events:none;width:var(--cur-size);height:var(--cur-size);margin:calc(var(--cur-size) / -2) 0 0 calc(var(--cur-size) / -2);
+  border-radius:50%;opacity:0;background:rgba(255,255,255,.06);
+  -webkit-backdrop-filter:saturate(1.4) contrast(1.1) brightness(1.06);backdrop-filter:saturate(1.4) contrast(1.1) brightness(1.06);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.85), 0 0 0 1px rgba(0,0,0,.22);
+  transition:width .35s cubic-bezier(.2,.7,.2,1), height .35s cubic-bezier(.2,.7,.2,1), margin .35s cubic-bezier(.2,.7,.2,1), opacity .25s}
+html.has-cursor .cursor.on{opacity:1}
+.cursor.hover{--cur-size:84px}
+.cursor.down{--cur-size:14px}
+.cursor.hover.down{--cur-size:70px}
